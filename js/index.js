@@ -51,23 +51,25 @@ function lineChart() {
         symbolSize: 10, // 小圆圈的大小
         // 区域渐变
         areaStyle: {
-          type: 'linear',
-          x: 0,
-          y: 0,
-          x2: 0,
-          y2: 1,
-          colorStops: [
-            {
-              offset: 0, color: '#499FEE' // 0% 处的颜色
-            },
-            {
-              offset: 0.8, color: 'rgba(255,255,255,0.2)'
-            },
-            {
-              offset: 1, color: 'rgba(255,255,255,0)'
-            }
-          ],
-          global: false // 缺省为 false
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              {
+                offset: 0, color: '#499FEE' // 0% 处的颜色
+              },
+              {
+                offset: 0.8, color: 'rgba(255,255,255,0.2)'
+              },
+              {
+                offset: 1, color: 'rgba(255,255,255,0)'
+              }
+            ],
+            global: false // 缺省为 false
+          }
         }
       }
     ],
@@ -117,7 +119,8 @@ function classSalaryChart() {
     },
     legend: {
       bottom: '6%',
-      left: 'center'
+      left: 'center',
+      itemWidth: 15
     },
     series: [
       {
@@ -248,7 +251,7 @@ function genderSalaryChart() {
       },
       {
         text: '女生',
-        top: '85%',
+        top: '88%',
         left: '45%',
         textStyle: {
           fontSize: 12
@@ -337,6 +340,14 @@ function mapChart() {
       textStyle: {
         fontSize: 16
       }
+    },
+    tooltip: {
+      backgroundColor: 'rgba(0,0,0,0.7)',
+      textStyle: {
+        color: '#fff'
+      },
+      borderColor: 'transparent',
+      // formatter: '{b}-{c}'
     },
     series: [
       {
