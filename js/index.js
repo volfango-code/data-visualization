@@ -148,6 +148,83 @@ function classSalaryChart() {
 }
 classSalaryChart()
 
+// 班级每组薪资
+function classGroupChart() {
+  const myChart = echarts.init(document.querySelector('#lines'))
+  const option = {
+    grid: {
+      left: 70,
+      top: 30,
+      right: 30,
+      bottom: 50
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    xAxis: {
+      type: 'category',
+      axisLabel: {
+        color: '#999'
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#ccc',
+          type: 'dashed'
+        }
+      }
+    },
+    yAxis: {
+      type: 'value',
+      splitLine: {
+        lineStyle: {
+          type: 'dashed'
+        }
+      }
+    },
+    series: [
+      {
+        data: [12200, 17932, 13901, 13934, 21290, 23300, 13300, 13320],
+        type: 'bar',
+        name: '期望薪资'
+      },
+      {
+        data: [22820, 19932, 16901, 15934, 31290, 13300, 14300, 18320],
+        type: 'bar',
+        name: '就业薪资'
+      }
+    ],
+    color: [
+      {
+        type: 'linear',
+        x: 0,
+        y: 0,
+        x2: 0,
+        y2: 1,
+        colorStops: [{
+          offset: 0, color: '#34D39A' // 0% 处的颜色
+        }, {
+          offset: 1, color: 'rgba(52,211,154,0.2)' // 100% 处的颜色
+        }],
+        global: false // 缺省为 false
+      }, {
+        type: 'linear',
+        x: 0,
+        y: 0,
+        x2: 0,
+        y2: 1,
+        colorStops: [{
+          offset: 0, color: '#499FEE' // 0% 处的颜色
+        }, {
+          offset: 1, color: 'rgba(73,159,238,0.2)' // 100% 处的颜色
+        }],
+        global: false // 缺省为 false
+      }
+    ]
+  }
+  myChart.setOption(option)
+}
+classGroupChart()
+
 //男女生薪资分布
 function genderSalaryChart() {
   const myChart = echarts.init(document.querySelector('#gender'))
@@ -302,3 +379,4 @@ function mapChart() {
   myChart.setOption(option)
 }
 mapChart()
+
