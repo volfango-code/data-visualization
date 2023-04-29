@@ -99,3 +99,51 @@ function lineChart() {
   myChart.setOption(option)
 }
 lineChart()
+
+// 饼图 班级薪资分布
+function classSalaryChart() {
+  const myChart = echarts.init(document.querySelector('#salary'))
+  const option = {
+    title: {
+      text: '班级薪资分布',
+      top: 15,
+      left: 10,
+      textStyle: {
+        fontSize: 16
+      }
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      bottom: '6%',
+      left: 'center'
+    },
+    series: [
+      {
+        name: '班级薪资分布',
+        type: 'pie',
+        radius: ['50%', '64%'],
+        itemStyle: {
+          borderRadius: 10,
+          borderColor: '#fff',
+          borderWidth: 2
+        },
+        label: {
+          show: false, // 控制标签（文本）不显示
+        },
+        labelLine: {
+          show: false
+        },
+        data: [
+          { value: 1048, name: '1万以下' },
+          { value: 235, name: '1万-2万' },
+          { value: 580, name: '1.5万-2万' },
+          { value: 484, name: '2万以上' }
+        ]
+      }
+    ]
+  }
+  myChart.setOption(option)
+}
+classSalaryChart()
