@@ -147,3 +147,67 @@ function classSalaryChart() {
   myChart.setOption(option)
 }
 classSalaryChart()
+
+//男女生薪资分布
+function genderSalaryChart() {
+  const myChart = echarts.init(document.querySelector('#gender'))
+  const option = {
+    title: [
+      {
+        text: '男女生薪资分布',
+        top: 15,
+        left: 10,
+        textStyle: {
+          fontSize: 16
+        }
+      },
+      {
+        text: '男生',
+        top: '50%',
+        left: '45%',
+        textStyle: {
+          fontSize: 12
+        }
+      },
+      {
+        text: '女生',
+        top: '85%',
+        left: '45%',
+        textStyle: {
+          fontSize: 12
+        }
+      }
+    ],
+    tooltip: {
+      trigger: 'item'
+    },
+    series: [
+      {
+        name: '男生薪资分布',
+        type: 'pie',
+        radius: ['20%', '30%'],
+        center: ['50%', '30%'],
+        data: [
+          { value: 1048, name: '1万以下' },
+          { value: 235, name: '1万-2万' },
+          { value: 580, name: '1.5万-2万' },
+          { value: 484, name: '2万以上' }
+        ]
+      },
+      {
+        name: '女生薪资分布',
+        type: 'pie',
+        radius: ['20%', '30%'],
+        center: ['50%', '70%'],
+        data: [
+          { value: 1048, name: '1万以下' },
+          { value: 235, name: '1万-2万' },
+          { value: 580, name: '1.5万-2万' },
+          { value: 484, name: '2万以上' }
+        ]
+      }
+    ]
+  }
+  myChart.setOption(option)
+}
+genderSalaryChart()
