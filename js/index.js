@@ -211,3 +211,94 @@ function genderSalaryChart() {
   myChart.setOption(option)
 }
 genderSalaryChart()
+
+// 地图
+function mapChart() {
+  const mapData = [
+    { name: '南海诸岛', value: 0 },
+    { name: '北京', value: 3 },
+    { name: '天津', value: 2 },
+    { name: '上海', value: 4 },
+    { name: '重庆', value: 1 },
+    { name: '河北', value: 20 },
+    { name: '河南', value: 23 },
+    { name: '云南', value: 0 },
+    { name: '辽宁', value: 15 },
+    { name: '黑龙江', value: 12 },
+    { name: '湖南', value: 2 },
+    { name: '安徽', value: 5 },
+    { name: '山东', value: 18 },
+    { name: '新疆', value: 0 },
+    { name: '江苏', value: 5 },
+    { name: '浙江', value: 1 },
+    { name: '江西', value: 4 },
+    { name: '湖北', value: 3 },
+    { name: '广西', value: 2 },
+    { name: '甘肃', value: 9 },
+    { name: '山西', value: 11 },
+    { name: '内蒙古', value: 14 },
+    { name: '陕西', value: 14 },
+    { name: '吉林', value: 10 },
+    { name: '福建', value: 0 },
+    { name: '贵州', value: 0 },
+    { name: '广东', value: 0 },
+    { name: '青海', value: 3 },
+    { name: '西藏', value: 0 },
+    { name: '四川', value: 1 },
+    { name: '宁夏', value: 1 },
+    { name: '海南', value: 0 },
+    { name: '台湾', value: 0 },
+    { name: '香港', value: 0 },
+    { name: '澳门', value: 0 }
+  ]
+  const myChart = echarts.init(document.querySelector('#map'))
+  const option = {
+    title: {
+      text: '籍贯分布',
+      top: 10,
+      left: 10,
+      textStyle: {
+        fontSize: 16
+      }
+    },
+    series: [
+      {
+        name: '籍贯分布',
+        type: 'map',
+        map: 'china',
+        data: mapData,
+        label: {
+          show: true,
+          fontSize: 10,
+          color: 'rgba(0,0,0,0.7)'
+        },
+        itemStyle: {
+          borderColor: 'rgba(0,0,0,0.2)',
+          areaColor: '#E0FFFF'
+        },
+        emphasis: {
+          itemStyle: {
+            areaColor: '#34D39A',
+            borderWidth: 0,
+            shadowBlur: 20,
+            shadowOffsetX: 0,
+            shadowOffsetY: 0,
+            shadowColor: 'rgba(0,0,0,0.5)'
+          }
+        }
+      }
+    ],
+    // 视觉映射
+    visualMap: {
+      type: 'continuous', // 连续型
+      max: 20,
+      min: 0,
+      text: [20, 0],
+      left: 15,
+      bottom: 10,
+      inRange: { color: ['#fff', '#0075F0'] } // 根据数值从小到大的颜色
+    }
+  }
+  myChart.setOption(option)
+}
+mapChart()
