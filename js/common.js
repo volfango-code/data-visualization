@@ -5,3 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('ready')
   }, 200)
 })
+
+// 配置axios根路径
+axios.defaults.baseURL = 'http://ajax-api.itheima.net'

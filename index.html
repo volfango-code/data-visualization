@@ -269,4 +269,19 @@
   <script src="./js/index.js"></script>
 </body>
 
+<script>
+
+  // 数据渲染
+  async function render() {
+    const result = await axios({
+      url: '/dashboard',
+      headers: {
+        Authorization: localStorage.getItem('token')
+      }
+    })
+    console.log(result);
+  }
+  render()
+</script>
+
 </html>
