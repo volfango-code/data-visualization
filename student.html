@@ -293,10 +293,7 @@
     // 数据渲染
     async function render() {
       const result = await axios({
-        url: '/students',
-        headers: {
-          Authorization: localStorage.getItem('token')
-        }
+        url: '/students'
       })
       console.log(result)
     }

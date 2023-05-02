@@ -274,10 +274,7 @@
   // 数据渲染
   async function render() {
     const result = await axios({
-      url: '/dashboard',
-      headers: {
-        Authorization: localStorage.getItem('token')
-      }
+      url: '/dashboard'
     })
     console.log(result);
   }
