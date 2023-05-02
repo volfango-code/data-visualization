@@ -295,9 +295,181 @@
       const result = await axios({
         url: '/students'
       })
-      console.log(result)
+      // 显示一共有几位学员
+      document.querySelector('.total').innerText = result.data.data.length
+
+      const strArr = result.data.data.map(item => {
+        const { id, name, age, gender, group, hope_salary, salary, area, city } = item
+        return `
+          <tr>
+            <td>${name}</td>
+            <td>${age}</td>
+            <td>${gender ? '女' : '男'}</td>
+            <td>第${group}组</td>
+            <td>${hope_salary}</td>
+            <td>${salary}</td>
+            <td>${area}${city}</td>
+            <td data-id="${id}">
+              <a href="javascript:;" class="text-success mr-3"><i class="bi bi-pen"></i></a>
+              <a href="javascript:;" class="text-danger"><i class="bi bi-trash"></i></a>
+            </td>
+          </tr>
+        `
+      })
+      document.querySelector('.list').innerHTML = strArr.join('')
     }
     render()
+
+    // 模态框
+    const modal = new bootstrap.Modal(document.querySelector('#modal'))
+
+    // 获取省市县数据，用于表单的地址选择
+    getProvinces()
+
+    // 添加
+    document.querySelector('#openModal').addEventListener('click', function (e) {
+      // 清空表单
+      document.querySelector('#form').reset()
+      // 设置模态框标题
+      document.querySelector('.modal-title').innerHTML = '添加学员'
+      // 显示模态框
+      modal.show()
+    })
+
+    // 确认按钮被点击
+    document.querySelector('#submit').addEventListener('click', async function (e) {
+      // 获取标题
+      const title = document.querySelector('.modal-title')
+      // 获取用户表单输入
+      const formData = val(document.querySelector('#form'))
+      // 按文档要求处理数据
+      formData.age = +formData.age
+      formData.gender = +formData.gender
+      formData.hope_salary = +formData.hope_salary
+      formData.salary = +formData.salary
+      formData.group = +formData.group
+
+      if (title.innerText === '添加学员') {
+        // 添加请求
+        await axios({
+          url: '/students',
+          method: 'POST',
+          data: formData
+        })
+      } else {
+        // 修改请求
+        await axios({
+          url: `/students/${title.dataset.id}`,
+          method: 'PUT',
+          data: formData
+        })
+      }
+
+      // 隐藏模态框
+      modal.hide()
+      // 清空表单
+      document.querySelector('#form').reset()
+      // 重新渲染
+      render()
+    })
+
+    // 使用事件委托处理数据的修改和删除
+    document.querySelector('.list').addEventListener('click', async function (e) {
+      // 获取用户ID
+      const id = e.target.parentNode.parentNode.dataset.id
+      // 修改
+      if (e.target.classList.contains('bi-pen')) {
+        // 设置模态框标题
+        document.querySelector('.modal-title').innerHTML = '修改学员信息'
+        // 保存用户id，发送修改请求时携带
+        document.querySelector('.modal-title').setAttribute('data-id', id)
+        // 显示模态框
+        modal.show()
+        // 请求要修改用户的数据
+        const user = await axios({
+          url: `/students/${id}`
+        })
+        // 先根据用户的省份渲染出对应的城市和区县数据填充到对应的下拉框中供表单作数据回填选中
+        const cities = await axios({
+          url: '/api/city',
+          params: {
+            pname: user.data.data.province
+          }
+        })
+        const areas = await axios({
+          url: '/api/area',
+          params: {
+            pname: user.data.data.province,
+            cname: user.data.data.city
+          }
+        })
+        const cityArr = cities.data.data.map(item => `<option value="${item}">${item}</option>`)
+        document.querySelector('[name=city]').innerHTML = '<option>--城市--</option>' + cityArr.join('')
+        const areaArr = areas.data.data.map(item => `<option value="${item}">${item}</option>`)
+        document.querySelector('[name=area]').innerHTML = '<option>--地区--</option>' + areaArr.join('')
+        // 将数据回填到表单供用户修改
+        val(document.querySelector('#form'), user.data.data)
+      }
+      // 删除
+      if (e.target.classList.contains('bi-trash')) {
+        // 询问用户是否确定删除
+        if (!confirm('您确定要删除吗？')) return
+        // 发送请求
+        await axios({
+          url: `/students/${id}`,
+          method: 'DELETE'
+        })
+        // 重新渲染
+        render()
+      }
+    })
+
+    // 省市县数据
+    async function getProvinces() {
+      // 默认省市县
+      const province = '<option>--省份--</option>'
+      const city = '<option>--城市--</option>'
+      const area = '<option>--地区--</option>'
+      const provinceNode = document.querySelector('[name=province]')
+      const cityNode = document.querySelector('[name=city]')
+      const areaNode = document.querySelector('[name=area]')
+
+      // 渲染省份
+      const provinces = await axios({
+        url: '/api/province'
+      })
+      const strArr = provinces.data.data.map(item => `<option value="${item}">${item}</option>`)
+      provinceNode.innerHTML = province + strArr.join('')
+
+      // 切换省份时，请求城市数据
+      provinceNode.addEventListener('change', async function () {
+        // 切换时将地区下拉框的数据清空
+        areaNode.innerHTML = area
+        const cities = await axios({
+          url: '/api/city',
+          params: {
+            pname: this.value
+          }
+        })
+        const strArr = cities.data.data.map(item => `<option value="${item}">${item}</option>`)
+        document.querySelector('[name=city]').innerHTML = city + strArr.join('')
+      })
+
+      // 切换城市时，获取地区数据
+      cityNode.addEventListener('change', async function () {
+        const areas = await axios({
+          url: '/api/area',
+          params: {
+            pname: provinceNode.value,
+            cname: this.value
+          }
+        })
+        const strArr = areas.data.data.map(item => `<option value="${item}">${item}</option>`)
+        document.querySelector('[name=area]').innerHTML = area + strArr.join('')
+      })
+    }
+
+
   </script>
 </body>
 
