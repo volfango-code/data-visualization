@@ -1,5 +1,5 @@
 // 折线图
-function lineChart() {
+function lineChart(year) {
   //  初始化
   const myChart = echarts.init(document.querySelector('#line'))
   // 配置对象
@@ -16,7 +16,7 @@ function lineChart() {
     // x轴配置
     xAxis: {
       type: 'category',
-      data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+      data: year.map(item => item.month),
       axisLabel: {
         // 轴线文字颜色
         color: '#999'
@@ -42,7 +42,7 @@ function lineChart() {
     // 图表数据
     series: [
       {
-        data: [9000, 12000, 15000, 13000, 10000, 18000, 14000, 10000, 12000, 13000, 15000, 19000],
+        data: year.map(item => item.salary),
         type: 'line',
         smooth: true, //平滑曲线
         lineStyle: {
@@ -100,10 +100,9 @@ function lineChart() {
   // 设置配置
   myChart.setOption(option)
 }
-lineChart()
 
 // 饼图 班级薪资分布
-function classSalaryChart() {
+function classSalaryChart(salaryData) {
   const myChart = echarts.init(document.querySelector('#salary'))
   const option = {
     title: {
@@ -138,21 +137,23 @@ function classSalaryChart() {
         labelLine: {
           show: false
         },
-        data: [
-          { value: 1048, name: '1万以下' },
-          { value: 235, name: '1万-2万' },
-          { value: 580, name: '1.5万-2万' },
-          { value: 484, name: '2万以上' }
-        ]
+        data: salaryData.map(item => {
+          return { value: item.g_count + item.b_count, name: item.label }
+        })
+        // data: [
+        //   { value: 1048, name: '1万以下' },
+        //   { value: 235, name: '1万-2万' },
+        //   { value: 580, name: '1.5万-2万' },
+        //   { value: 484, name: '2万以上' }
+        // ]
       }
     ]
   }
   myChart.setOption(option)
 }
-classSalaryChart()
 
 // 班级每组薪资
-function classGroupChart() {
+function classGroupChart(groupData) {
   const myChart = echarts.init(document.querySelector('#lines'))
   const option = {
     grid: {
@@ -166,6 +167,7 @@ function classGroupChart() {
     },
     xAxis: {
       type: 'category',
+      data: groupData[1].map(item => item.name),
       axisLabel: {
         color: '#999'
       },
@@ -186,12 +188,12 @@ function classGroupChart() {
     },
     series: [
       {
-        data: [12200, 17932, 13901, 13934, 21290, 23300, 13300, 13320],
+        data: groupData[1].map(item => item.hope_salary),
         type: 'bar',
         name: '期望薪资'
       },
       {
-        data: [22820, 19932, 16901, 15934, 31290, 13300, 14300, 18320],
+        data: groupData[1].map(item => item.salary),
         type: 'bar',
         name: '就业薪资'
       }
@@ -225,11 +227,25 @@ function classGroupChart() {
     ]
   }
   myChart.setOption(option)
+
+  document.querySelector('#btns').addEventListener('click', function (e) {
+    if (e.target.tagName === 'BUTTON') {
+      // 样式排它
+      document.querySelector('#btns .btn-blue').classList.remove('btn-blue')
+      e.target.classList.add('btn-blue')
+      // 更新图表配置数据
+      let index = e.target.innerText
+      option.xAxis.data = groupData[index].map(item => item.name)
+      option.series[0].data = groupData[index].map(item => item.hope_salary)
+      option.series[1].data = groupData[index].map(item => item.salary)
+      // 重新配置
+      myChart.setOption(option)
+    }
+  })
 }
-classGroupChart()
 
 //男女生薪资分布
-function genderSalaryChart() {
+function genderSalaryChart(salaryData) {
   const myChart = echarts.init(document.querySelector('#gender'))
   const option = {
     title: [
@@ -267,70 +283,82 @@ function genderSalaryChart() {
         type: 'pie',
         radius: ['20%', '30%'],
         center: ['50%', '30%'],
-        data: [
-          { value: 1048, name: '1万以下' },
-          { value: 235, name: '1万-2万' },
-          { value: 580, name: '1.5万-2万' },
-          { value: 484, name: '2万以上' }
-        ]
+        data: salaryData.map(item => {
+          return { value: item.b_count, name: item.label }
+        })
+        // data: [
+        //   { value: 1048, name: '1万以下' },
+        //   { value: 235, name: '1万-2万' },
+        //   { value: 580, name: '1.5万-2万' },
+        //   { value: 484, name: '2万以上' }
+        // ]
       },
       {
         name: '女生薪资分布',
         type: 'pie',
         radius: ['20%', '30%'],
         center: ['50%', '70%'],
-        data: [
-          { value: 1048, name: '1万以下' },
-          { value: 235, name: '1万-2万' },
-          { value: 580, name: '1.5万-2万' },
-          { value: 484, name: '2万以上' }
-        ]
+        data: salaryData.map(item => {
+          return { value: item.g_count, name: item.label }
+        })
+        // data: [
+        //   { value: 1048, name: '1万以下' },
+        //   { value: 235, name: '1万-2万' },
+        //   { value: 580, name: '1.5万-2万' },
+        //   { value: 484, name: '2万以上' }
+        // ]
       }
     ]
   }
   myChart.setOption(option)
 }
-genderSalaryChart()
 
 // 地图
-function mapChart() {
+function mapChart(provinceData) {
   const mapData = [
     { name: '南海诸岛', value: 0 },
-    { name: '北京', value: 3 },
-    { name: '天津', value: 2 },
-    { name: '上海', value: 4 },
-    { name: '重庆', value: 1 },
-    { name: '河北', value: 20 },
-    { name: '河南', value: 23 },
+    { name: '北京', value: 0 },
+    { name: '天津', value: 0 },
+    { name: '上海', value: 0 },
+    { name: '重庆', value: 0 },
+    { name: '河北', value: 0 },
+    { name: '河南', value: 0 },
     { name: '云南', value: 0 },
-    { name: '辽宁', value: 15 },
-    { name: '黑龙江', value: 12 },
-    { name: '湖南', value: 2 },
-    { name: '安徽', value: 5 },
-    { name: '山东', value: 18 },
+    { name: '辽宁', value: 0 },
+    { name: '黑龙江', value: 0 },
+    { name: '湖南', value: 0 },
+    { name: '安徽', value: 0 },
+    { name: '山东', value: 0 },
     { name: '新疆', value: 0 },
-    { name: '江苏', value: 5 },
-    { name: '浙江', value: 1 },
-    { name: '江西', value: 4 },
-    { name: '湖北', value: 3 },
-    { name: '广西', value: 2 },
-    { name: '甘肃', value: 9 },
-    { name: '山西', value: 11 },
-    { name: '内蒙古', value: 14 },
-    { name: '陕西', value: 14 },
-    { name: '吉林', value: 10 },
+    { name: '江苏', value: 0 },
+    { name: '浙江', value: 0 },
+    { name: '江西', value: 0 },
+    { name: '湖北', value: 0 },
+    { name: '广西', value: 0 },
+    { name: '甘肃', value: 0 },
+    { name: '山西', value: 0 },
+    { name: '内蒙古', value: 0 },
+    { name: '陕西', value: 0 },
+    { name: '吉林', value: 0 },
     { name: '福建', value: 0 },
     { name: '贵州', value: 0 },
     { name: '广东', value: 0 },
-    { name: '青海', value: 3 },
+    { name: '青海', value: 0 },
     { name: '西藏', value: 0 },
-    { name: '四川', value: 1 },
-    { name: '宁夏', value: 1 },
+    { name: '四川', value: 0 },
+    { name: '宁夏', value: 0 },
     { name: '海南', value: 0 },
     { name: '台湾', value: 0 },
     { name: '香港', value: 0 },
     { name: '澳门', value: 0 }
   ]
+
+  // 处理地图数据
+  mapData.forEach(item => {
+    let current = provinceData.find(e => e.name.includes(item.name))
+    if (current) item.value = current.value
+  })
+
   const myChart = echarts.init(document.querySelector('#map'))
   const option = {
     title: {
@@ -346,8 +374,8 @@ function mapChart() {
       textStyle: {
         color: '#fff'
       },
-      borderColor: 'transparent',
-      // formatter: '{b}-{c}'
+      borderWidth: 0,
+      formatter: '{b} - {c}'
     },
     series: [
       {
@@ -389,5 +417,35 @@ function mapChart() {
   }
   myChart.setOption(option)
 }
-mapChart()
 
+// 数据渲染
+async function render() {
+
+  const result = await axios({
+    url: '/dashboard'
+  })
+
+  console.log(result);
+
+  const { groupData, overview, provinceData, salaryData, year } = result.data.data
+
+  for (let key in overview) {
+    document.querySelector(`[name=${key}]`).innerHTML = overview[key]
+  }
+
+  // 折线图
+  lineChart(year)
+
+  // 饼图 班级薪资分布
+  classSalaryChart(salaryData)
+
+  // 班级每组薪资
+  classGroupChart(groupData)
+
+  // 男女生薪资分布
+  genderSalaryChart(salaryData)
+
+  // 地图
+  mapChart(provinceData)
+}
+render()
