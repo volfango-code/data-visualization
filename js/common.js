@@ -6,6 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 200)
 })
 
+// 退出登录
+document.querySelector('#logout')?.addEventListener('click', function () {
+  // 删除token
+  localStorage.removeItem('token')
+  // 跳转到登录页
+  location.href = './login.html'
+})
+
 // 配置axios
 // 根路径
 axios.defaults.baseURL = 'http://ajax-api.itheima.net'
@@ -26,3 +34,4 @@ axios.interceptors.response.use(function (response) {
 
   return Promise.reject(error);
 });
+
